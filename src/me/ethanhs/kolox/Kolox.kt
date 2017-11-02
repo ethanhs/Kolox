@@ -7,6 +7,14 @@ import java.nio.file.Paths
 import kotlin.system.exitProcess
 
 
+fun report_err(token: Token, msg: String) {
+    if (token.type === TokenType.EOF) {
+        report(token.line, " at end of file", msg)
+    } else {
+        report(token.line, " at '" + token.lexeme + "'", msg)
+    }
+}
+
 fun report(line: Int, where: String, msg: String) {
     println("[line $line] Error $where: $msg")
 }
@@ -18,9 +26,11 @@ fun err(line: Int, msg: String) {
 fun run(src: String): Boolean {
     val scanner = Scanner(src)
     val toks = scanner.scanTokens()
-    for (tok in toks) {
-        println(tok)
-    }
+    val parser = Parser(toks)
+    val expr = parser.parse()
+    if (expr is InvalidExpr) return false // there was a parse error
+    val interp = Interpreter()
+    interp.interpret(expr)
     return true
 }
 

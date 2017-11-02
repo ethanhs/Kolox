@@ -137,7 +137,7 @@ class Scanner(private var src: String) {
             else -> {
                 if (isDigit(c)) {
                     number()
-                } else if (isAlphaNum(c)) {
+                } else if (isAlpha(c)) {
                     identifier()
                 } else {
                     err(line, "Invalid character.")
